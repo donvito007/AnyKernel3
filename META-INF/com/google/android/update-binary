@@ -279,14 +279,14 @@ do_devicecheck() {
   for testname in $(grep '^device.name.*=' anykernel.sh | cut -d= -f2-); do
     for devicename in $device $product $vendordevice $vendorproduct; do
       if [ "$devicename" == "$testname" ]; then
-        ui_print "==> $testname" " ";
+        ui_print "--> $testname";
         match=1;
         break 2;
       fi;
     done;
   done;
   if [ ! "$match" ]; then
-    abort " " "Unsupported device. Aborting...";
+    abort "==> Unsupported device. Aborting...";
   fi;
 }
 int2ver() {
@@ -320,9 +320,9 @@ do_versioncheck() {
     done;
   fi;
   if [ "$supported" ]; then
-    ui_print "==> $android_ver" " ";
+    ui_print "--> $android_ver";
   else
-    abort " " "Unsupported Android version. Aborting...";
+    abort "==> Unsupported Android version. Aborting...";
   fi;
 }
 do_levelcheck() {
@@ -343,9 +343,9 @@ do_levelcheck() {
     hi_lvl=9999-99;
   fi;
   if echo -e "$hi_lvl\n$lo_lvl\n$parsed_lvl" | sort -g | grep -n "$parsed_lvl" | grep -q '^2:'; then
-    ui_print "==> $android_lvl" " ";
+    ui_print "--> $android_lvl";
   else
-    abort " " "Unsupported Android security patch level. Aborting...";
+    abort "==> Unsupported Android security patch level. Aborting...";
   fi;
 }
 dump_moduleinfo() {

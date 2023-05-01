@@ -320,7 +320,7 @@ flash_boot() {
         fi;
         if [ $((magisk_patched & 3)) -eq 1 ]; then
           ui_print "==> Magisk detected!!!";
-          ui_print "==> Patching kernel so reflashing Magisk is not necessary...";
+          ui_print "--> Patching kernel so reflashing Magisk is not necessary...";
           comp=$($bin/magiskboot decompress kernel 2>&1 | grep -vE 'raw|zimage' | sed -n 's;.*\[\(.*\)\];\1;p');
           ($bin/magiskboot split $kernel || $bin/magiskboot decompress $kernel kernel) 2>/dev/null;
           if [ $? != 0 -a "$comp" ] && $comp --help 2>/dev/null; then
@@ -448,7 +448,7 @@ flash_generic() {
         flags=$($bin/httools_static disable-flags);
         [ $? == 0 ] || abort "Failed to parse top-level vbmeta. Aborting...";
         if [ "$flags" == "enabled" ]; then
-          ui_print " " "dm-verity detected! Patching $avb...";
+          ui_print "==> dm-verity detected! Patching $avb...";
           for avbpath in /dev/block/mapper /dev/block/by-name /dev/block/bootdevice/by-name; do
             for file in $avb $avb$slot; do
               if [ -e $avbpath/$file ]; then
@@ -477,7 +477,7 @@ flash_generic() {
             $bin/lptools_static map $1_ak3 || abort "Mapping $1_ak3 failed. Aborting...";
             $bin/lptools_static replace $1_ak3 $1$slot || abort "Replacing $1$slot failed. Aborting...";
             imgblock=/dev/block/mapper/$1_ak3;
-            ui_print " " "Warning: $1$slot replaced in super. Reboot before further logical partition operations.";
+            ui_print "==> Warning: $1$slot replaced in super. Reboot before further logical partition operations.";
           else
             echo "Creating $1_ak3 failed. Attempting to resize $1$slot..." >&2;
             $bin/httools_static umount $1 || abort "Unmounting $1 failed. Aborting...";
