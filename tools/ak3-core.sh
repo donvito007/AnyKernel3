@@ -813,15 +813,33 @@ setup_ak() {
     mv -f vendor_patch vendor_kernel_boot-files/patch) 2>/dev/null;
     touch init_v4_setup;
   # automate simple multi-partition setup for hdr_v3+ boot + vendor_boot with dtb/dlkm (for v3 only until magiskboot supports hdr v4 vendor_ramdisk unpack/repack)
-  elif [ -e "/dev/block/bootdevice/by-name/vendor_boot$slot" -a ! -f vendor_v3_setup ] && [ -f dtb -o -d vendor_ramdisk -o -d vendor_patch ]; then
-    echo "Setting up for simple automatic vendor_boot flashing..." >&2;
-    (mkdir boot-files;
-    mv -f Image* ramdisk patch boot-files;
-    mkdir vendor_boot-files;
-    mv -f dtb vendor_boot-files;
-    mv -f vendor_ramdisk vendor_boot-files/ramdisk;
-    mv -f vendor_patch vendor_boot-files/patch) 2>/dev/null;
-    touch vendor_v3_setup;
+## ignore start
+#  elif [ -e "/dev/block/bootdevice/by-name/vendor_boot$slot" -a ! -f vendor_v3_setup ] && [ -f dtb -o -d vendor_ramdisk -o -d vendor_patch ]; then
+#    echo "Setting up for simple automatic vendor_boot flashing..." >&2;
+#    (mkdir boot-files;
+#    mv -f Image* ramdisk patch boot-files;
+#    mkdir vendor_boot-files;
+#    mv -f dtb vendor_boot-files;
+#    mv -f vendor_ramdisk vendor_boot-files/ramdisk;
+#    mv -f vendor_patch vendor_boot-files/patch) 2>/dev/null;
+#    touch vendor_v3_setup;
+## ignore end
+## edit start
+elif [ -e "/dev/block/by-name/vendor_boot$slot" ] && [ -f dtb ]; then
+    ui_print "==> Flashing DTB to vendor_boot...";
+    vndrbootdir=$home/vendor_boot-files;
+    vndrbootold=$vndrbootdir/vendor_boot_old.img;
+    vndrbootnew=$vndrbootdir/vendor_boot_new.img;
+    vndrbootblock=/dev/block/by-name/vendor_boot$slot;
+    mkdir -p $vndrbootdir;
+    cd $vndrbootdir;
+    dd if=$vndrbootblock of=$vndrbootold;
+    $bin/magiskboot unpack $vndrbootold;
+    mv -f $home/dtb $vndrbootdir;
+    $bin/magiskboot repack -n $vndrbootold $vndrbootnew;
+    dd if=$vndrbootnew of=$vndrbootblock;
+    cd $home;
+## edit end
   fi;
 
   # allow multi-partition ramdisk modifying configurations (using reset_ak)
