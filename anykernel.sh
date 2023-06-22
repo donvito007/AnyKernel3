@@ -4,17 +4,17 @@
 ### AnyKernel setup
 # begin properties
 properties() { '
-kernel.string=Kernel with su for thyme
+kernel.string=Kernel with su for ximi sm8250
 do.devicecheck=1
 do.modules=0
 do.systemless=1
 do.cleanup=1
 do.cleanuponabort=0
 device.name1=thyme
-device.name2=
-device.name3=
-device.name4=
-device.name5=
+device.name2=alioth
+device.name3=aliothin
+device.name4=mikona
+device.name5=munch
 supported.versions=
 supported.patchlevels=
 '; } # end properties
