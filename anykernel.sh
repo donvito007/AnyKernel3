@@ -58,6 +58,15 @@ append_file fstab.tuna "usbdisk" fstab;
 write_boot; # use flash_boot to skip ramdisk repack, e.g. for devices with init_boot ramdisk
 ## end boot install
 
+# shell variables
+block=vendor_boot;
+is_slot_device=1;
+ramdisk_compression=auto;
+patch_vbmeta_flag=auto;
+
+# reset for vendor_boot patching
+reset_ak;
+
 
 ## init_boot shell variables
 #block=init_boot;
