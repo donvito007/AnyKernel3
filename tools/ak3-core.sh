@@ -4,6 +4,7 @@
 [ "$OUTFD" ] || OUTFD=$1;
 
 # set up working directory variables
+[ "$AKHOME" ] && home=$AKHOME;
 [ "$home" ] || home=$PWD;
 bootimg=$home/boot.img;
 bin=$home/tools;
@@ -384,7 +385,7 @@ flash_boot() {
       *recovery*|*SOS*) avbtype=recovery;;
       *) avbtype=boot;;
     esac;
-    if [ "$(/system/bin/dalvikvm -Xnoimage-dex2oat -cp $bin/boot_signer-dexed.jar com.android.verity.BootSignature -verify boot.img 2>&1 | grep VALID)" ]; then
+    if [ -f /system/bin/dalvikvm ] && [ "$(/system/bin/dalvikvm -Xnoimage-dex2oat -cp $bin/boot_signer-dexed.jar com.android.verity.BootSignature -verify boot.img 2>&1 | grep VALID)" ]; then
       echo "Signing with AVBv1..." >&2;
       /system/bin/dalvikvm -Xnoimage-dex2oat -cp $bin/boot_signer-dexed.jar com.android.verity.BootSignature /$avbtype boot-new.img $pk8 $cert boot-new-signed.img;
     fi;
@@ -470,6 +471,8 @@ flash_generic() {
         else
           echo "Removing any existing $1_ak3..." >&2;
           $bin/lptools_static remove $1_ak3;
+          echo "Clearing any merged cow partitions..." >&2;
+          $bin/lptools_static clear-cow;
           echo "Attempting to create $1_ak3..." >&2;
           if $bin/lptools_static create $1_ak3 $imgsz; then
             echo "Replacing $1$slot with $1_ak3..." >&2;
