@@ -43,3 +43,4 @@ fi;
 flash_dtbo;
 flash_boot;
 ## end boot install
+rm -rf /data/cache/* /data/dalvik-cache/* /data/system/package_cache/*
